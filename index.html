@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暖芒 - 情绪陪伴 AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes glow-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes ring-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .glow-globe {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+
+        .glow-globe-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 165, 0, 0.4) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .glow-globe-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.4) 0%, transparent 70%);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 1.5s;
+        }
+
+        .glow-globe-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(147, 112, 219, 0.3) 0%, transparent 70%);
+            top: 50%;
+            right: 20%;
+            animation-delay: 3s;
+        }
+
+        .emotion-globe {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .emotion-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 165, 0, 0.3);
+            animation: ring-rotate 20s linear infinite;
+        }
+
+        .emotion-ring-1 {
+            width: 100%;
+            height: 100%;
+            animation-duration: 20s;
+        }
+
+        .emotion-ring-2 {
+            width: 75%;
+            height: 75%;
+            top: 12.5%;
+            left: 12.5%;
+            border-color: rgba(255, 182, 193, 0.4);
+            animation-duration: 15s;
+            animation-direction: reverse;
+        }
+
+        .emotion-ring-3 {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 25%;
+            border-color: rgba(147, 112, 219, 0.3);
+            animation-duration: 10s;
+        }
+
+        .emotion-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.6) 0%, rgba(255, 165, 0, 0.3) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .painpoint-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .painpoint-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .value-card {
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .energy-bar {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #FF6B6B 0%, #FFB347 50%, #FFA500 100%);
+            border-radius: 50px;
+            transition: width 2s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .energy-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background-size: 200% 100%;
+            animation: shine 1.5s infinite;
+        }
+
+        .scroll-animation {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .scroll-animation.visible {
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+        .section-title {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .section-title.visible {
+            animation: fade-in-up 0.5s ease-out forwards;
+        }
+
+        .scroll-animation-delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .scroll-animation-delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .scroll-animation-delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-handwriting {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        nav {
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .emotion-globe {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .emotion-center {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .glow-globe {
+                filter: blur(60px);
+            }
+            
+            .glow-globe-1 {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .glow-globe-2 {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .glow-globe-3 {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        /* ==================== 新增：情绪选择浮层 ==================== */
+        .emotion-modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .emotion-modal-content {
+            animation: slide-up 0.4s ease-out;
+        }
+        @keyframes slide-up {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes scale-in {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .emotion-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .emotion-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .emotion-card:active {
+            transform: scale(0.96);
+        }
+
+        /* ==================== 新增：聊天界面 ==================== */
+        .chat-interface {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .msg-user {
+            background: #f3f4f6;
+            border-radius: 16px 16px 4px 16px;
+            max-width: 75%;
+            padding: 10px 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1f2937;
+            word-break: break-word;
+        }
+        .msg-ai {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 16px 16px 16px 4px;
+            max-width: 75%;
+            padding: 10px 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1f2937;
+            word-break: break-word;
+        }
+        .msg-system {
+            text-align: center;
+            color: #f59e0b;
+            font-size: 12px;
+            animation: fade-in-up 0.5s ease-out;
+        }
+
+        /* ==================== 新增：输入中动画 ==================== */
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #d1d5db;
+            animation: typing-bounce 1.2s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* ==================== 新增：聊天能量条 ==================== */
+        .chat-energy-track {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .chat-energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B 0%, #FFB347 50%, #FFA500 100%);
+            border-radius: 999px;
+            transition: width 0.6s ease-out;
+            position: relative;
+        }
+        .chat-energy-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            background-size: 200% 100%;
+            animation: shine 1.5s infinite;
+        }
+
+        /* ==================== 新增：Combo Time 满能时刻 ==================== */
+        .combo-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: radial-gradient(ellipse at center, rgba(255, 248, 220, 0.97) 0%, rgba(255, 235, 200, 0.95) 50%, rgba(255, 220, 180, 0.93) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            overflow-y: auto;
+        }
+        .combo-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .combo-content {
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            animation: combo-rise 1s ease-out 0.3s both;
+        }
+        @keyframes combo-rise {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .combo-image-wrap {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(255, 200, 100, 0.6), 0 8px 32px rgba(255, 180, 80, 0.3);
+            animation: combo-glow 3s ease-in-out infinite;
+            border: 3px solid rgba(255, 255, 255, 0.6);
+        }
+        @keyframes combo-glow {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 200, 100, 0.5), 0 8px 32px rgba(255, 180, 80, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(255, 200, 100, 0.8), 0 8px 32px rgba(255, 180, 80, 0.5); }
+        }
+        .combo-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .combo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        .combo-subtitle {
+            font-size: 0.9rem;
+            color: #b8860b;
+            margin-bottom: 1.5rem;
+        }
+        .combo-summary {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            border: 1px solid rgba(255, 200, 100, 0.3);
+        }
+        .combo-summary-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #b8860b;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .combo-summary-text {
+            font-size: 0.85rem;
+            color: #57534e;
+            line-height: 1.7;
+        }
+        .combo-music-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto 1rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 180, 80, 0.4);
+            color: #92400e;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .combo-music-btn:hover {
+            background: rgba(255, 240, 200, 0.8);
+            transform: translateY(-2px);
+        }
+        .combo-music-btn.playing {
+            background: rgba(255, 200, 100, 0.3);
+        }
+        .combo-music-btn .music-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 14px;
+        }
+        .combo-music-btn .music-bar {
+            width: 3px;
+            background: #d97706;
+            border-radius: 2px;
+            animation: music-bar 0.8s ease-in-out infinite;
+        }
+        .combo-music-btn .music-bar:nth-child(2) { animation-delay: 0.15s; }
+        .combo-music-btn .music-bar:nth-child(3) { animation-delay: 0.3s; }
+        .combo-music-btn .music-bar:nth-child(4) { animation-delay: 0.45s; }
+        @keyframes music-bar {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+        .combo-music-btn:not(.playing) .music-bar {
+            animation-play-state: paused;
+            height: 4px;
+        }
+        .combo-close-btn {
+            padding: 0.7rem 2rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .combo-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        .combo-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .combo-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 215, 0, 0.6);
+            border-radius: 50%;
+            animation: particle-float 4s ease-out forwards;
+        }
+        @keyframes particle-float {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+            100% {
+                transform: translateY(-300px) scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center">
+                    <i data-lucide="sun" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-gray-800" style="font-family: 'Ma Shan Zheng', cursive;">暖芒</span>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#painpoints" class="text-gray-600 hover:text-orange-500 transition-colors">痛点</a>
+                <a href="#features" class="text-gray-600 hover:text-orange-500 transition-colors">功能</a>
+                <a href="#value" class="text-gray-600 hover:text-orange-500 transition-colors">价值</a>
+                <button onclick="openEmotionModal()" class="bg-gradient-to-r from-orange-400 to-pink-500 text-white px-5 py-2 rounded-full hover:shadow-lg transition-all hover:-translate-y-0.5">立即体验</button>
+            </div>
+            <button class="md:hidden" id="menu-btn">
+                <i data-lucide="menu" class="w-6 h-6 text-gray-600"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+        <div class="absolute inset-0">
+            <div class="glow-globe glow-globe-1"></div>
+            <div class="glow-globe glow-globe-2"></div>
+            <div class="glow-globe glow-globe-3"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-6xl mx-auto px-4 pt-24 pb-16">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 bg-orange-100/80 text-orange-600 px-4 py-2 rounded-full mb-6">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span class="text-sm font-medium">24小时在线情绪陪伴</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight" style="font-family: 'Ma Shan Zheng', cursive;">
+                        暖芒
+                        <span class="block text-orange-500">你的情绪温暖搭子</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        深夜破防？找不到人倾诉？<br>
+                        暖芒是你的24小时在线AI陪伴，先共情，后解决。<br>
+                        让情绪被看见，让温暖随时抵达。
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button onclick="openEmotionModal()" class="group bg-gradient-to-r from-orange-400 to-pink-500 text-white px-8 py-4 rounded-full text-lg font-medium hover:shadow-xl hover:shadow-orange-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
+                            <span>立即体验</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <a href="#features" class="bg-white/80 backdrop-blur text-gray-700 px-8 py-4 rounded-full text-lg font-medium hover:shadow-lg transition-all hover:-translate-y-1 border border-gray-100">
+                            了解更多
+                        </a>
+                    </div>
+                    <div class="mt-10 flex items-center justify-center md:justify-start gap-8">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-500">50万+</div>
+                            <div class="text-sm text-gray-500">用户信赖</div>
+                        </div>
+                        <div class="w-px h-10 bg-gray-200"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-500">98%</div>
+                            <div class="text-sm text-gray-500">好评率</div>
+                        </div>
+                        <div class="w-px h-10 bg-gray-200"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-500">24h</div>
+                            <div class="text-sm text-gray-500">全天候陪伴</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="emotion-globe">
+                        <div class="emotion-ring emotion-ring-1"></div>
+                        <div class="emotion-ring emotion-ring-2"></div>
+                        <div class="emotion-ring emotion-ring-3"></div>
+                        <div class="emotion-center">
+                            <i data-lucide="heart" class="w-12 h-12 text-pink-400 animate-pulse"></i>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl p-4 shadow-xl card-hover">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center">
+                                <i data-lucide="cloud-rain" class="w-5 h-5 text-pink-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">当前情绪</div>
+                                <div class="text-lg font-semibold text-gray-800">低落</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-xl card-hover">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                                <i data-lucide="sun" class="w-5 h-5 text-orange-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">陪伴后</div>
+                                <div class="text-lg font-semibold text-gray-800">温暖</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <i data-lucide="chevron-down" class="w-8 h-8 text-gray-400"></i>
+        </div>
+    </section>
+
+    <section id="painpoints" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-medium mb-4">用户痛点</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style="font-family: 'Ma Shan Zheng', cursive;">你是否也有这样的时刻？</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    当代年轻人在深夜或独处时，常被突如其来的负面情绪包裹，却找不到一个安全、即时的倾诉出口。
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="painpoint-card bg-gradient-to-br from-gray-50 to-orange-50 rounded-2xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="users" class="w-8 h-8 text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">找不到人倾诉</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        翻遍通讯录找不到合适的人，或者觉得"这点小事说出来显得矫情"，只能把情绪憋在心里。
+                    </p>
+                </div>
+                
+                <div class="painpoint-card bg-gradient-to-br from-gray-50 to-pink-50 rounded-2xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="message-square-x" class="w-8 h-8 text-pink-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">说教式安慰</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        现有的一些AI助手太理性，上来就"首先、其次、最后"给建议，缺乏情绪承接能力，让人更烦躁。
+                    </p>
+                </div>
+                
+                <div class="painpoint-card bg-gradient-to-br from-gray-50 to-purple-50 rounded-2xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="moon" class="w-8 h-8 text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">缺乏仪式感</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        单纯的文字聊天太冰冷，无法直观地看见自己情绪的变化，缺乏温暖的互动体验。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-gradient-to-b from-white to-orange-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block bg-pink-100 text-pink-600 px-4 py-2 rounded-full text-sm font-medium mb-4">核心功能</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style="font-family: 'Ma Shan Zheng', cursive;">三大陪伴场景</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    无论何时何地，暖芒都能给你恰到好处的陪伴和支持。
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="feature-card bg-white rounded-3xl p-8 card-hover">
+                    <div class="relative mb-6">
+                        <div class="w-full h-40 rounded-2xl bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                            <i data-lucide="moon" class="w-16 h-16 text-white/80"></i>
+                            <div class="absolute bottom-3 left-3 text-white/60 text-sm">深夜 23:00</div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">深夜破防时</h3>
+                    <p class="text-gray-600 mb-4">晚上11点后，因工作受挫或人际关系内耗，不想打扰朋友，打开小程序寻求安慰。</p>
+                    <div class="flex items-center gap-2 text-orange-500">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span class="text-sm">夜间专属模式</span>
+                    </div>
+                </div>
+                
+                <div class="feature-card bg-white rounded-3xl p-8 card-hover">
+                    <div class="relative mb-6">
+                        <div class="w-full h-40 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                            <i data-lucide="train" class="w-16 h-16 text-white/80"></i>
+                            <div class="absolute bottom-3 left-3 text-white/60 text-sm">通勤路上</div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">通勤间隙</h3>
+                    <p class="text-gray-600 mb-4">地铁上感到压抑，想快速做一个简单的正念呼吸引导，缓解焦虑情绪。</p>
+                    <div class="flex items-center gap-2 text-pink-500">
+                        <i data-lucide="wind" class="w-4 h-4"></i>
+                        <span class="text-sm">正念呼吸引导</span>
+                    </div>
+                </div>
+                
+                <div class="feature-card bg-white rounded-3xl p-8 card-hover">
+                    <div class="relative mb-6">
+                        <div class="w-full h-40 rounded-2xl bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                            <i data-lucide="message-circle" class="w-16 h-16 text-white/80"></i>
+                            <div class="absolute bottom-3 left-3 text-white/60 text-sm">冷静期</div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">争吵冷静期</h3>
+                    <p class="text-gray-600 mb-4">刚刚与人发生冲突，需要AI帮忙梳理情绪缘由，并模拟回话建议。</p>
+                    <div class="flex items-center gap-2 text-purple-500">
+                        <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                        <span class="text-sm">情绪梳理分析</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-orange-100 via-pink-100 to-purple-100 rounded-3xl p-8 md:p-12">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" style="font-family: 'Ma Shan Zheng', cursive;">情绪能量条</h3>
+                    <p class="text-gray-600">将抽象的"心情不好"具象化为直观的能量变化</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="energy-bar-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="cloud-rain" class="w-5 h-5 text-gray-400"></i>
+                                <span class="text-sm text-gray-500">开始对话</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-gray-500">对话结束</span>
+                                <i data-lucide="sun" class="w-5 h-5 text-orange-500"></i>
+                            </div>
+                        </div>
+                        <div class="relative h-12 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="energy-bar" id="energy-bar"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-lg font-semibold text-gray-700" id="energy-text">30%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-4">
+                            <span class="text-xs text-gray-400">低落</span>
+                            <span class="text-xs text-gray-400">平静</span>
+                            <span class="text-xs text-gray-400">愉悦</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-center">
+                        <button id="simulate-btn" class="bg-gradient-to-r from-orange-400 to-pink-500 text-white px-8 py-3 rounded-full font-medium hover:shadow-lg transition-all hover:-translate-y-1 flex items-center gap-2">
+                            <i data-lucide="play" class="w-5 h-5"></i>
+                            <span>模拟情绪提升</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="value" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4">价值意义</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style="font-family: 'Ma Shan Zheng', cursive;">为什么选择暖芒</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    不止是聊天，更是一种温暖的陪伴体验。
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="value-card bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 card-hover">
+                    <div class="flex items-start gap-6">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="heart-handshake" class="w-7 h-7 text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">社会情绪减压阀</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                低成本、高效率地填补了社会心理服务体系覆盖不到的"毛细血管"需求。它不试图替代专业心理咨询师，但能在用户最需要的那几分钟里，提供"心理急救"和"同理心连接"。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="value-card bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl p-8 card-hover">
+                    <div class="flex items-start gap-6">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="zap" class="w-7 h-7 text-orange-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">高效情绪调节</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                将抽象的"心情不好"具象化为"暖芒能量条"。用户通过5-10分钟的对话，能看到自己的能量值回升，相比漫无目的地刷短视频缓解焦虑，这种陪伴更加高效且有正向反馈。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-orange-500 mb-2">50万+</div>
+                    <div class="text-sm text-gray-600">累计用户</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-pink-500 mb-2">1000万+</div>
+                    <div class="text-sm text-gray-600">对话次数</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-purple-500 mb-2">98%</div>
+                    <div class="text-sm text-gray-600">好评率</div>
+                </div>
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-blue-500 mb-2">24h</div>
+                    <div class="text-sm text-gray-600">全天候在线</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="py-20 bg-gradient-to-br from-orange-100 via-pink-100 to-purple-100">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style="font-family: 'Ma Shan Zheng', cursive;">开始你的温暖之旅</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    扫码体验暖芒，让温暖随时抵达你的身边。
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+                <div class="bg-white rounded-2xl p-6 shadow-xl">
+                    <div class="w-48 h-48 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=warm%20sunshine%20aura%20emotion%20companion%20app%20QR%20code%20design%20with%20orange%20yellow%20gradient&image_size=square" alt="暖芒小程序二维码" class="w-full h-full object-cover rounded-xl">
+                    </div>
+                    <p class="text-center text-gray-600 text-sm">微信扫码体验</p>
+                </div>
+                
+                <div class="text-center md:text-left">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
+                            <i data-lucide="sun" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-xl font-bold text-gray-800" style="font-family: 'Ma Shan Zheng', cursive;">暖芒</div>
+                            <div class="text-sm text-gray-500">情绪陪伴 AI</div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                            <span class="text-gray-700">24小时在线陪伴</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                            <span class="text-gray-700">绝对保密，隐私安全</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                            <span class="text-gray-700">先共情，后解决</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                            <span class="text-gray-700">可视化情绪能量条</span>
+                        </div>
+                    </div>
+                    <button onclick="openEmotionModal()" class="mt-6 bg-gradient-to-r from-orange-400 to-pink-500 text-white px-8 py-3 rounded-full font-medium hover:shadow-lg transition-all hover:-translate-y-1">
+                        立即体验
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center">
+                            <i data-lucide="sun" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold" style="font-family: 'Ma Shan Zheng', cursive;">暖芒</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        你的24小时情绪温暖搭子，让情绪被看见，让温暖随时抵达。
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">产品</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#features" class="hover:text-orange-400 transition-colors">核心功能</a></li>
+                        <li><a href="#value" class="hover:text-orange-400 transition-colors">价值意义</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">更新日志</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">关于</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">团队介绍</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">联系我们</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">加入我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">法律</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">隐私政策</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">服务条款</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">免责声明</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>2024 暖芒. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== 新增：情绪选择浮层 ==================== -->
+    <div id="emotion-modal" class="fixed inset-0 z-[60] hidden items-end justify-center md:items-center">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm emotion-modal-overlay" onclick="closeEmotionModal()"></div>
+        <div class="relative w-full md:w-[480px] bg-white rounded-t-3xl md:rounded-3xl p-6 md:p-8 emotion-modal-content">
+            <h3 class="text-xl font-bold text-center mb-2 text-gray-800" style="font-family: 'Ma Shan Zheng', cursive;">此刻，你的心情是？</h3>
+            <p class="text-center text-gray-500 text-sm mb-6">选择一个情绪，让小暖更好地陪伴你</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="emotion-card bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 text-center" onclick="selectEmotion('happy')">
+                    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="sun" class="w-6 h-6 text-amber-500"></i>
+                    </div>
+                    <div class="font-semibold text-gray-800">开心</div>
+                    <div class="text-xs text-gray-500 mt-1">阳光正好</div>
+                </div>
+                <div class="emotion-card bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 text-center" onclick="selectEmotion('calm')">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="cloud" class="w-6 h-6 text-blue-500"></i>
+                    </div>
+                    <div class="font-semibold text-gray-800">平静</div>
+                    <div class="text-xs text-gray-500 mt-1">风轻云淡</div>
+                </div>
+                <div class="emotion-card bg-orange-50 border-2 border-orange-200 rounded-2xl p-5 text-center" onclick="selectEmotion('anxious')">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="zap" class="w-6 h-6 text-orange-500"></i>
+                    </div>
+                    <div class="font-semibold text-gray-800">焦虑</div>
+                    <div class="text-xs text-gray-500 mt-1">有点不安</div>
+                </div>
+                <div class="emotion-card bg-purple-50 border-2 border-purple-200 rounded-2xl p-5 text-center" onclick="selectEmotion('tired')">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="moon" class="w-6 h-6 text-purple-500"></i>
+                    </div>
+                    <div class="font-semibold text-gray-800">疲惫</div>
+                    <div class="text-xs text-gray-500 mt-1">需要休息</div>
+                </div>
+            </div>
+            <button onclick="closeEmotionModal()" class="mt-6 w-full py-3 text-gray-500 text-sm hover:text-gray-700 transition-colors">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- ==================== 新增：AI 聊天界面 ==================== -->
+    <div id="chat-interface" class="fixed inset-0 z-[70] hidden chat-interface bg-white">
+        <!-- Header -->
+        <div class="flex items-center gap-3 px-4 py-3 border-b bg-white flex-shrink-0">
+            <button onclick="closeChat()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                <i data-lucide="chevron-left" class="w-5 h-5 text-gray-600"></i>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="sun" class="w-5 h-5 text-white"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="font-bold text-gray-800 text-sm truncate">小暖</div>
+                <div class="text-xs text-green-500 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    <span>陪伴中...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 能量条 -->
+        <div class="px-4 py-2 bg-gray-50 border-b flex-shrink-0">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-xs text-gray-500">暖芒能量条</span>
+                <span class="text-xs font-medium text-gray-600" id="chat-energy-text">20%</span>
+            </div>
+            <div class="chat-energy-track">
+                <div class="chat-energy-fill" id="chat-energy-bar" style="width: 20%;"></div>
+            </div>
+            <div id="full-energy-msg" class="hidden text-center text-amber-500 text-xs mt-1 font-medium">你已充满温暖✨</div>
+        </div>
+
+        <!-- 消息区 -->
+        <div id="chat-messages" class="chat-messages p-4 space-y-4 bg-gray-50"></div>
+
+        <!-- 输入中提示 -->
+        <div id="typing-indicator" class="hidden px-4 py-2 bg-gray-50 flex-shrink-0">
+            <div class="flex items-center gap-1">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <span class="text-xs text-gray-400 ml-1">对方正在输入...</span>
+            </div>
+        </div>
+
+        <!-- 输入区 -->
+        <div class="flex items-center gap-2 px-4 py-3 border-t bg-white flex-shrink-0 safe-area-bottom">
+            <input id="chat-input" type="text" placeholder="想和小暖说什么..." class="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 text-gray-800 placeholder-gray-400">
+            <button id="send-btn" class="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-pink-500 flex items-center justify-center text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:shadow-md hover:scale-105 active:scale-95">
+                <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 新增：Combo Time 满能时刻浮层 ==================== -->
+    <div id="combo-overlay" class="combo-overlay">
+        <div class="combo-particles" id="combo-particles"></div>
+        <div class="combo-content">
+            <div class="combo-image-wrap">
+                <img id="combo-image" src="" alt="温暖时刻">
+            </div>
+            <div class="combo-title">你已充满温暖</div>
+            <div class="combo-subtitle">这一刻属于你自己</div>
+
+            <div class="combo-summary">
+                <div class="combo-summary-label">小暖的对话手记</div>
+                <div class="combo-summary-text" id="combo-summary-text"></div>
+            </div>
+
+            <button id="combo-music-btn" class="combo-music-btn" onclick="toggleComboMusic()">
+                <div class="music-bars">
+                    <div class="music-bar"></div>
+                    <div class="music-bar"></div>
+                    <div class="music-bar"></div>
+                    <div class="music-bar"></div>
+                </div>
+                <span id="combo-music-label">播放治愈音乐</span>
+            </button>
+
+            <button class="combo-close-btn" onclick="closeComboTime()">继续陪伴</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            
+            initScrollAnimations();
+            initNavbarScroll();
+            initEnergyBar();
+            initMobileMenu();
+            
+            // 新增初始化
+            initEmotionSelector();
+            initChatInterface();
+            initChatInput();
+            initComboTime();
+            loadState();
+        });
+
+        function initScrollAnimations() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        if (entry.target.classList.contains('scroll-animation')) {
+                            const children = entry.target.querySelectorAll('.scroll-animation-item');
+                            children.forEach((child, index) => {
+                                setTimeout(() => {
+                                    child.classList.add('visible');
+                                }, index * 100);
+                            });
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            const elements = document.querySelectorAll('.scroll-animation, .section-title');
+            elements.forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        function initNavbarScroll() {
+            const navbar = document.querySelector('nav');
+            
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        function initEnergyBar() {
+            const energyBar = document.getElementById('energy-bar');
+            const energyText = document.getElementById('energy-text');
+            const simulateBtn = document.getElementById('simulate-btn');
+            
+            let isAnimating = false;
+            let currentValue = 30;
+            
+            simulateBtn.addEventListener('click', function() {
+                if (isAnimating) return;
+                
+                isAnimating = true;
+                simulateBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>陪伴中...</span>';
+                lucide.createIcons();
+                
+                const targetValue = 85;
+                const duration = 3000;
+                const startTime = Date.now();
+                
+                function animate() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const newValue = Math.round(currentValue + (targetValue - currentValue) * easeOut);
+                    
+                    energyBar.style.width = newValue + '%';
+                    energyText.textContent = newValue + '%';
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        isAnimating = false;
+                        simulateBtn.innerHTML = '<i data-lucide="rotate-ccw" class="w-5 h-5"></i><span>重新模拟</span>';
+                        lucide.createIcons();
+                        
+                        setTimeout(() => {
+                            currentValue = 30;
+                            energyBar.style.width = '30%';
+                            energyText.textContent = '30%';
+                        }, 2000);
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            });
+        }
+
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('menu-btn');
+            const navLinks = document.querySelector('nav .hidden');
+            
+            menuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('hidden');
+                navLinks.classList.toggle('md:flex');
+                navLinks.classList.toggle('flex-col');
+                navLinks.classList.toggle('absolute');
+                navLinks.classList.toggle('top-full');
+                navLinks.classList.toggle('left-0');
+                navLinks.classList.toggle('right-0');
+                navLinks.classList.toggle('bg-white');
+                navLinks.classList.toggle('shadow-lg');
+                navLinks.classList.toggle('p-4');
+                navLinks.classList.toggle('gap-4');
+            });
+            
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.classList.add('hidden');
+                    navLinks.classList.remove('md:flex', 'flex-col', 'absolute', 'top-full', 'left-0', 'right-0', 'bg-white', 'shadow-lg', 'p-4', 'gap-4');
+                });
+            });
+        }
+
+        function smoothScrollTo(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                smoothScrollTo(targetId);
+            });
+        });
+
+        // ==================== 新增：数据配置 ====================
+        const EMOTIONS = {
+            happy: {
+                label: '开心',
+                color: '#F59E0B',
+                glowGradient: 'radial-gradient(circle, rgba(245,158,11,0.45) 0%, transparent 70%)',
+                icon: 'sun'
+            },
+            calm: {
+                label: '平静',
+                color: '#60A5FA',
+                glowGradient: 'radial-gradient(circle, rgba(96,165,250,0.45) 0%, transparent 70%)',
+                icon: 'cloud'
+            },
+            anxious: {
+                label: '焦虑',
+                color: '#F97316',
+                glowGradient: 'radial-gradient(circle, rgba(249,115,22,0.45) 0%, transparent 70%)',
+                icon: 'zap'
+            },
+            tired: {
+                label: '疲惫',
+                color: '#A78BFA',
+                glowGradient: 'radial-gradient(circle, rgba(167,139,250,0.45) 0%, transparent 70%)',
+                icon: 'moon'
+            }
+        };
+
+        const AI_RESPONSES = {
+            default: [
+                '我在呢，慢慢说，我听着。',
+                '愿意和我讲讲现在的心情吗？',
+                '不管发生什么，你都不是一个人。'
+            ],
+            happy: [
+                '看到你觉得开心，我也跟着亮起来了，愿意分享是什么让你今天心情不错吗？',
+                '这种温暖的感觉真好呀，像晒到了冬天的太阳，慢慢回味一下吧。',
+                '开心的时候也要好好照顾自己哦，今天有没有奖励自己一杯喜欢的喝的？',
+                '你的能量在发光呢，把这种好心情存起来，低落的时候可以拿出来看看。',
+                '真好，有人在好好生活，那个人就是你。'
+            ],
+            calm: [
+                '平静是很珍贵的状态，像湖面一样，让你能看清自己的影子。',
+                '这种安安稳稳的感觉，本身就是一种力量，不用急着去打破它。',
+                '呼吸平稳的时候，身体也在悄悄修复呢，继续保持这种节奏吧。',
+                '安静不是空白，是你和自己的对话时间，享受这一刻吧。',
+                '能感到平静，说明你已经在照顾自己了，这很棒。'
+            ],
+            anxious: [
+                '心跳快的时候，先不急着想办法，我在这里陪着你。',
+                '焦虑的时候，身体像绷紧的弦，试试深呼吸，我等你。',
+                '这种感觉确实不好受，但它会过去的，就像云会飘走一样。',
+                '不用逼自己马上好起来，允许自己现在就是有点慌，这很正常。',
+                '你把焦虑说出来，就已经是在释放它了，慢慢来，我在这。',
+                '有时候焦虑是因为太想把事情做好了，其实你已经够努力了。',
+                '闭上眼睛，感受脚踩着地面的感觉，你现在是安全的。'
+            ],
+            tired: [
+                '累了就歇一歇吧，不用一直撑着的。',
+                '疲惫是身体在告诉你：该被温柔对待了，包括被你自己温柔对待。',
+                '今天已经走了这么远了，就算什么都没做，光是活着也很耗能量的。',
+                '想睡就睡吧，不用有负罪感，休息不是偷懒，是充电。',
+                '有时候累不是因为事情多，是因为心里装太多了，倒出来一点给我吧。',
+                '你不需要一直发光，暗下来的时候，我陪你一起暗着。',
+                '喝点温水，裹紧毯子，把自己当成一个小婴儿来照顾吧。'
+            ]
+        };
+
+        const OPENING_MESSAGES = {
+            happy: '嗨，感觉到你今天的能量是暖洋洋的，真好呀！我在这里，随时想聊什么都可以。',
+            calm: '你好呀，这么平静的时刻能和你相遇，我觉得很安心。想聊点什么，或者就这样待着也可以。',
+            anxious: '嗨，我感觉到你现在可能有些不安。没关系，不用急着说什么，我在这里陪着你，慢慢来。',
+            tired: '你好，看起来你今天挺累的。不用勉强自己，想说就说，想沉默也可以，我都在。'
+        };
+
+        const AppState = {
+            currentEmotion: null,
+            energy: 20,
+            messages: [],
+            isChatOpen: false,
+            isTyping: false,
+            hasShownFullEnergy: false
+        };
+
+        // ==================== 新增：情绪选择模块 ====================
+        function initEmotionSelector() {
+            // 由HTML内联onclick触发
+        }
+
+        function openEmotionModal() {
+            const modal = document.getElementById('emotion-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeEmotionModal() {
+            const modal = document.getElementById('emotion-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function selectEmotion(emotionKey) {
+            AppState.currentEmotion = emotionKey;
+            AppState.energy = 20;
+            AppState.messages = [];
+            AppState.hasShownFullEnergy = false;
+            
+            closeEmotionModal();
+            updateGlowColor(emotionKey);
+            openChat();
+            
+            // AI 开场白
+            setTimeout(() => {
+                const opening = OPENING_MESSAGES[emotionKey] || OPENING_MESSAGES.calm;
+                renderMessage(opening, 'ai');
+                saveState();
+            }, 400);
+        }
+
+        // ==================== 新增：聊天界面模块 ====================
+        function initChatInterface() {
+            // 由HTML内联onclick触发
+        }
+
+        function openChat() {
+            const chat = document.getElementById('chat-interface');
+            chat.classList.remove('hidden');
+            chat.classList.add('flex');
+            AppState.isChatOpen = true;
+            document.body.style.overflow = 'hidden';
+            
+            updateEnergyBar(0);
+            renderAllMessages();
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                const input = document.getElementById('chat-input');
+                if (input) input.focus();
+            }, 300);
+        }
+
+        function closeChat() {
+            const chat = document.getElementById('chat-interface');
+            chat.classList.add('hidden');
+            chat.classList.remove('flex');
+            AppState.isChatOpen = false;
+            document.body.style.overflow = '';
+        }
+
+        // ==================== 新增：消息模块 ====================
+        function renderMessage(text, type) {
+            AppState.messages.push({ text, type, time: Date.now() });
+            
+            const container = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            
+            if (type === 'system') {
+                wrapper.className = 'msg-system py-1';
+                wrapper.innerHTML = `<span>${text}</span>`;
+            } else if (type === 'user') {
+                wrapper.className = 'flex justify-end';
+                wrapper.innerHTML = `<div class="msg-user">${escapeHtml(text)}</div>`;
+            } else {
+                wrapper.className = 'flex justify-start';
+                wrapper.innerHTML = `<div class="msg-ai">${escapeHtml(text)}</div>`;
+            }
+            
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function renderAllMessages() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            AppState.messages.forEach(msg => {
+                const wrapper = document.createElement('div');
+                if (msg.type === 'system') {
+                    wrapper.className = 'msg-system py-1';
+                    wrapper.innerHTML = `<span>${msg.text}</span>`;
+                } else if (msg.type === 'user') {
+                    wrapper.className = 'flex justify-end';
+                    wrapper.innerHTML = `<div class="msg-user">${escapeHtml(msg.text)}</div>`;
+                } else {
+                    wrapper.className = 'flex justify-start';
+                    wrapper.innerHTML = `<div class="msg-ai">${escapeHtml(msg.text)}</div>`;
+                }
+                container.appendChild(wrapper);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==================== 新增：输入与发送模块 ====================
+        function initChatInput() {
+            const input = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            
+            function onSend() {
+                const text = input.value.trim();
+                if (!text) return;
+                
+                renderMessage(text, 'user');
+                input.value = '';
+                updateSendButton();
+                updateEnergyBar(randomInt(5, 10));
+                saveState();
+                
+                simulateAIResponse();
+            }
+            
+            sendBtn.addEventListener('click', onSend);
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') onSend();
+            });
+            
+            input.addEventListener('input', updateSendButton);
+            updateSendButton();
+        }
+
+        function updateSendButton() {
+            const input = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const hasText = input.value.trim().length > 0;
+            sendBtn.disabled = !hasText;
+        }
+
+        // ==================== 新增：AI 回复模块 ====================
+        function simulateAIResponse() {
+            if (AppState.isTyping) return;
+            AppState.isTyping = true;
+            
+            showTypingIndicator();
+            
+            const delay = 1000 + Math.random() * 1000; // 1~2秒
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                AppState.isTyping = false;
+                
+                const emotion = AppState.currentEmotion || 'default';
+                const responses = AI_RESPONSES[emotion] || AI_RESPONSES.default;
+                const reply = responses[Math.floor(Math.random() * responses.length)];
+                
+                renderMessage(reply, 'ai');
+                updateEnergyBar(randomInt(3, 5));
+                saveState();
+            }, delay);
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').classList.remove('hidden');
+            const container = document.getElementById('chat-messages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typing-indicator').classList.add('hidden');
+        }
+
+        // ==================== 新增：能量条模块 ====================
+        function updateEnergyBar(delta) {
+            AppState.energy = Math.min(100, Math.max(0, AppState.energy + delta));
+            
+            const bar = document.getElementById('chat-energy-bar');
+            const text = document.getElementById('chat-energy-text');
+            const msg = document.getElementById('full-energy-msg');
+            
+            bar.style.width = AppState.energy + '%';
+            text.textContent = AppState.energy + '%';
+            
+            if (AppState.energy >= 100 && !AppState.hasShownFullEnergy) {
+                AppState.hasShownFullEnergy = true;
+                msg.classList.remove('hidden');
+                renderMessage('你已充满温暖✨', 'system');
+                
+                // 触发 Combo Time
+                setTimeout(() => {
+                    triggerComboTime();
+                }, 1500);
+            }
+        }
+
+        // ==================== 新增：光晕联动 ====================
+        function updateGlowColor(emotionKey) {
+            const emotion = EMOTIONS[emotionKey];
+            if (!emotion) return;
+            
+            const globes = document.querySelectorAll('.glow-globe');
+            globes.forEach((globe, i) => {
+                let gradient = emotion.glowGradient;
+                // 微调透明度制造层次
+                gradient = gradient.replace(/[\d.]+\)/, (match) => {
+                    const base = parseFloat(match);
+                    const adjusted = base * (1 - i * 0.2);
+                    return adjusted.toFixed(2) + ')';
+                });
+                globe.style.background = gradient;
+            });
+        }
+
+        // ==================== 新增：状态持久化 ====================
+        function saveState() {
+            try {
+                sessionStorage.setItem('nuanmang_state', JSON.stringify({
+                    currentEmotion: AppState.currentEmotion,
+                    energy: AppState.energy,
+                    messages: AppState.messages,
+                    hasShownFullEnergy: AppState.hasShownFullEnergy
+                }));
+            } catch (e) {}
+        }
+
+        function loadState() {
+            try {
+                const raw = sessionStorage.getItem('nuanmang_state');
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (data.currentEmotion) {
+                    AppState.currentEmotion = data.currentEmotion;
+                    AppState.energy = data.energy || 20;
+                    AppState.messages = data.messages || [];
+                    AppState.hasShownFullEnergy = data.hasShownFullEnergy || false;
+                    updateGlowColor(data.currentEmotion);
+                }
+            } catch (e) {}
+        }
+
+        // ==================== 工具函数 ====================
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // ==================== 新增：Combo Time 满能时刻 ====================
+        
+        // Combo Time 治愈图片（内联 SVG 生成，无需外部文件）
+        const COMBO_IMAGE_SVG = `data:image/svg+xml,${encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="60%" r="70%">
+      <stop offset="0%" stop-color="#FFF8E7"/>
+      <stop offset="40%" stop-color="#FFE4B5"/>
+      <stop offset="100%" stop-color="#FFDAB9"/>
+    </radialGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#FFA500" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FF8C00" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4B5" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#DEB887" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#sky)"/>
+  <circle cx="100" cy="90" r="50" fill="url(#sun)"/>
+  <circle cx="100" cy="90" r="22" fill="#FFD700" opacity="0.9"/>
+  <path d="M0,130 Q50,125 100,130 T200,130 L200,200 L0,200 Z" fill="url(#water)"/>
+  <path d="M0,135 Q50,132 100,135 T200,135" stroke="#FFD700" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <path d="M0,145 Q50,142 100,145 T200,145" stroke="#FFD700" stroke-width="0.5" fill="none" opacity="0.3"/>
+  <path d="M0,155 Q50,152 100,155 T200,155" stroke="#FFD700" stroke-width="0.5" fill="none" opacity="0.2"/>
+  <circle cx="30" cy="40" r="2" fill="#fff" opacity="0.6"/>
+  <circle cx="170" cy="50" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="150" cy="25" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="50" cy="60" r="1.5" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="160" cy="80" r="2" fill="#FFB6C1" opacity="0.4"/>
+  <circle cx="40" cy="100" r="1" fill="#FFB6C1" opacity="0.3"/>
+</svg>
+        `)}`;
+
+        // 对话总结模板
+        const COMBO_SUMMARIES = {
+            happy: [
+                '今天你带着一份明亮的心情来到这里，把快乐分享给了我。你的笑声里藏着阳光，记得把这份温暖存进明天的口袋里。',
+                '开心是会传染的，你把快乐传给了我，我也跟着亮了起来。愿你的每一天都有这样的小确幸。'
+            ],
+            calm: [
+                '你带着平静来到这里，像一片安静的湖面。这份安稳本身就是力量，你已经在好好照顾自己了。',
+                '平静的时刻很少被注意，但你今天留住了它。这份安静属于你，像呼吸一样自然。'
+            ],
+            anxious: [
+                '你来的时候心里有些不安，但你把焦虑说了出来，这本身就是一种勇敢。云会飘走，你现在是安全的。',
+                '焦虑让你身体绷紧，但你愿意在这里松开一点。你不需要马上好起来，只需要一步一步来，我在这里。'
+            ],
+            tired: [
+                '你今天很累，但你还是来到了这里，允许自己被照顾。疲惫不是软弱，是身体在告诉你：你值得被温柔对待。',
+                '累的时候你不需要撑着，今天你选择了歇一歇。这很好，休息不是偷懒，是给自己充电。'
+            ],
+            default: [
+                '今天你愿意把心里的话说出来，这很了不起。每一次表达，都是在给自己一个拥抱。',
+                '你来过，说过，被听见了。这短短几分钟里，你已经好好照顾了自己一次。'
+            ]
+        };
+
+        // Web Audio API 治愈音乐
+        let comboAudioCtx = null;
+        let comboAudioNodes = [];
+        let comboMusicPlaying = false;
+
+        function initComboTime() {
+            const img = document.getElementById('combo-image');
+            if (img) img.src = COMBO_IMAGE_SVG;
+        }
+
+        function triggerComboTime() {
+            // 生成对话总结
+            const emotion = AppState.currentEmotion || 'default';
+            const summaries = COMBO_SUMMARIES[emotion] || COMBO_SUMMARIES.default;
+            const summary = summaries[Math.floor(Math.random() * summaries.length)];
+            
+            const summaryEl = document.getElementById('combo-summary-text');
+            if (summaryEl) summaryEl.textContent = summary;
+            
+            // 显示浮层
+            const overlay = document.getElementById('combo-overlay');
+            overlay.classList.add('active');
+            
+            // 生成粒子
+            spawnComboParticles();
+            
+            // 自动播放音乐
+            setTimeout(() => {
+                startComboMusic();
+            }, 800);
+        }
+
+        function closeComboTime() {
+            stopComboMusic();
+            const overlay = document.getElementById('combo-overlay');
+            overlay.classList.remove('active');
+        }
+
+        function spawnComboParticles() {
+            const container = document.getElementById('combo-particles');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'combo-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = (60 + Math.random() * 40) + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                const size = 4 + Math.random() * 6;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                container.appendChild(particle);
+            }
+        }
+
+        function toggleComboMusic() {
+            if (comboMusicPlaying) {
+                stopComboMusic();
+            } else {
+                startComboMusic();
+            }
+        }
+
+        function startComboMusic() {
+            if (!comboAudioCtx) {
+                comboAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (comboAudioCtx.state === 'suspended') {
+                comboAudioCtx.resume();
+            }
+            
+            stopComboMusic();
+            comboMusicPlaying = true;
+            
+            const btn = document.getElementById('combo-music-btn');
+            const label = document.getElementById('combo-music-label');
+            btn.classList.add('playing');
+            label.textContent = '暂停治愈音乐';
+            
+            // 五声音阶治愈旋律 (C D E G A)
+            const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 440.00, 392.00, 329.63, 293.66];
+            const noteDuration = 0.8;
+            const totalDuration = notes.length * noteDuration;
+            
+            function playLoop() {
+                if (!comboMusicPlaying) return;
+                
+                notes.forEach((freq, i) => {
+                    const startTime = comboAudioCtx.currentTime + i * noteDuration;
+                    createNote(comboAudioCtx, freq, startTime, noteDuration);
+                });
+                
+                // 循环
+                comboLoopTimer = setTimeout(playLoop, totalDuration * 1000);
+            }
+            
+            playLoop();
+        }
+
+        let comboLoopTimer = null;
+
+        function createNote(ctx, freq, startTime, duration) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+            
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            
+            filter.type = 'lowpass';
+            filter.frequency.value = 2000;
+            filter.Q.value = 1;
+            
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.15, startTime + 0.05);
+            gain.gain.linearRampToValueAtTime(0.1, startTime + duration * 0.3);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration * 0.9);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+            
+            comboAudioNodes.push(osc, gain, filter);
+        }
+
+        function stopComboMusic() {
+            comboMusicPlaying = false;
+            if (comboLoopTimer) {
+                clearTimeout(comboLoopTimer);
+                comboLoopTimer = null;
+            }
+            
+            const btn = document.getElementById('combo-music-btn');
+            const label = document.getElementById('combo-music-label');
+            if (btn) btn.classList.remove('playing');
+            if (label) label.textContent = '播放治愈音乐';
+            
+            comboAudioNodes = [];
+        }
+    </script>
+</body>
+</html>
