@@ -287,6 +287,55 @@
             }
         }
 
+        /* ==================== 新增：Hero 头图横幅 ==================== */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(255, 140, 66, 0.15);
+        }
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(255, 251, 245, 0.85) 100%);
+            pointer-events: none;
+        }
+        .hero-banner-text {
+            position: absolute;
+            bottom: 1.25rem;
+            left: 1.5rem;
+            z-index: 1;
+        }
+        .hero-banner-text .banner-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        .hero-banner-text .banner-subtitle {
+            font-size: 0.8rem;
+            color: #b8860b;
+        }
+        @media (max-width: 768px) {
+            .hero-banner {
+                height: 180px;
+                border-radius: 16px;
+            }
+            .hero-banner-text .banner-title {
+                font-size: 1rem;
+            }
+        }
+
         /* ==================== 新增：情绪选择浮层 ==================== */
         .emotion-modal-overlay {
             transition: opacity 0.3s ease;
@@ -592,6 +641,14 @@
         </div>
         
         <div class="relative z-10 max-w-6xl mx-auto px-4 pt-24 pb-16">
+            <!-- Hero 头图横幅 -->
+            <div class="hero-banner">
+                <img src="assets/cover.jpg" alt="暖芒 — 夜晚中温暖陪伴的场景">
+                <div class="hero-banner-text">
+                    <div class="banner-title">暖芒 · 让情绪被看见</div>
+                    <div class="banner-subtitle">你的24小时情绪温暖搭子</div>
+                </div>
+            </div>
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-center md:text-left">
                     <div class="inline-flex items-center gap-2 bg-orange-100/80 text-orange-600 px-4 py-2 rounded-full mb-6">
